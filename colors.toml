@@ -1,0 +1,39 @@
+mode = "dark"
+
+accent = "#ffffff"
+selection = "#ffffff"
+muted = "#ffffff"
+
+background = "#000000"
+dark_background = "#000000"
+darker_background = "#000000"
+lighter_background = "#000000"
+
+foreground = "#ffffff"
+dark_foreground = "#ffffff"
+light_foreground = "#ffffff"
+bright_foreground = "#ffffff"
+
+
+# Restrained exception to the strict 1-bit rule: red/green are the two
+# terminal roles with the most everyday practical payoff (git diff
+# additions/removals, test pass/fail, error output) and read like a single
+# deliberate color pop against an otherwise black-and-white frame -- closer
+# to a neon sign in a monochrome photo than a full palette. Every other
+# role stays white; nothing about the desktop chrome itself (background,
+# foreground, accent, selection) changes.
+red = "#ff2d2d"
+yellow = "#ffffff"
+orange = "#ffffff"
+green = "#00e676"
+cyan = "#ffffff"
+blue = "#ffffff"
+magenta = "#ffffff"
+brown = "#ffffff"
+
+bright_red = "#ff5555"
+bright_yellow = "#ffffff"
+bright_green = "#33ff8c"
+bright_cyan = "#ffffff"
+bright_blue = "#ffffff"
+bright_magenta = "#ffffff"
