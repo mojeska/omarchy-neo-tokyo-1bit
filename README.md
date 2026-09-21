@@ -41,12 +41,58 @@ test pass/fail, error output. Every other terminal color (yellow, orange,
 cyan, blue, magenta, brown) stays white. It reads like a single deliberate
 color pop against an otherwise monochrome frame, not a full palette.
 
-## Regenerating the backgrounds
+## How the shipped backgrounds were made
 
 The three background images were built with ImageMagick shape/text drawing
-plus a final dither pass (`-dither FloydSteinberg -colors 2` or
-`-ordered-dither o8x8`) -- no photos, no AI image generation, no external
-assets. There's no build script checked in; if you want to tweak them,
-regenerate with ImageMagick 7 (`magick`) using similar layered
-draw-then-dither steps, keeping every output strictly 2-color
-(`magick <file> -format '%k colors' info:` should always print `2 colors`).
+plus a final dither pass -- no photos, no AI image generation, no external
+assets. There's no build script checked in; the drawing part is
+scene-specific, but the final dither pass (below) is generic and is the
+same step used to convert a real photo.
+
+## Adding your own backgrounds
+
+Any photo can be converted to match this theme with a single ImageMagick
+command -- it's the same dither pass used to finish the three shipped
+scenes, just pointed at a real image instead of drawn shapes:
+
+```bash
+magick your-photo.jpg -colorspace Gray -dither FloydSteinberg -colors 2 -type bilevel your-photo-1bit.png
+```
+
+That gives a soft, photographic dither -- good for photos with real
+gradients (sky, glow, smooth light falloff). For the more mechanical,
+halftone-grid look instead (what `2-neon-alley.png` uses):
+
+```bash
+magick your-photo.jpg -colorspace Gray -ordered-dither o8x8 your-photo-1bit.png
+```
+
+Either way, confirm the result is genuinely 2-color before using it:
+
+```bash
+magick your-photo-1bit.png -format '%k colors' info:   # should print "2 colors"
+```
+
+A high-contrast source photo (bright lights against dark sky, strong
+silhouettes) dithers far better than a flat, evenly-lit one -- the dither
+pattern is doing the work a gradient would otherwise do, so it needs real
+tonal range to work with.
+
+## Where converted backgrounds go
+
+Omarchy looks in two places for this theme's backgrounds, both keyed by
+its slug, `neo-tokyo-1bit`:
+
+- `~/.config/omarchy/themes/neo-tokyo-1bit/backgrounds/` -- the theme's own
+  shipped backgrounds (this repo's `backgrounds/`, once installed).
+- `~/.config/omarchy/backgrounds/neo-tokyo-1bit/` -- **the right place for
+  your own additions.** It exists for exactly this: extra backgrounds for
+  any theme (stock or custom) without editing the theme itself, so
+  re-running `omarchy theme install` on this repo later won't wipe out
+  your own photos.
+
+```bash
+mkdir -p ~/.config/omarchy/backgrounds/neo-tokyo-1bit
+cp your-photo-1bit.png ~/.config/omarchy/backgrounds/neo-tokyo-1bit/
+omarchy theme bg next   # cycle to it
+```
